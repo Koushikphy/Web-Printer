@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name=viewport content='width=700'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,
+        body {
+            font-size: 1.25rem;
+        }
+
+        #root {
+            width: fit-content;
+            height: 98vh;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-flow: column;
+        }
+
+        #header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+
+        #header>div:first-child {
+            padding-right: 1rem;
+            font-size: 1.75rem;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        #header>div:nth-child(2) {
+
+            font-size: 1rem;
+            text-overflow: ellipsis;
+        }
+
+        #mainBody {
+            flex: 1;
+        }
+
+
+        input[type='text'],
+        input[type='file'],
+        input[type='submit'],
+        select {
+            font-size: 1.0rem;
+        }
+
+        #form {
+            display: grid;
+            grid-auto-flow: row;
+            grid-column-gap: .5em;
+            grid-row-gap: 0.5em;
+            grid-template-columns: 1fr 3fr;
+            grid-template-rows: repeat(5, max-content);
+            align-items: center;
+        }
+
+        #form-submit {
+            grid-column: span 2;
+            width: fit-content;
+            margin: 2rem auto;
+            padding: 0.1rem 2rem;
+        }
+        #footer{
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<!-- ToDo: Inherit from a base template -->
+
+<body>
+    <div id="root" >
+        <div id="header">
+            <div>Web Printer</div>
+            <!-- Change the printer name here.  -->
+            <div>HP-ColorLaserJet-M153-M154</div>
+            <!-- ToDo: Use pycups to detect printer name dynamically -->
+        </div>
+        <div id="mainBody">
+            <form id='form' method=post enctype=multipart/form-data>
+
+                <label for="file">File</label>
+                <input type=file name='file'>
+                <label for="pages">Pages</label>
+                <input type="text" name="pages" id="pages" placeholder="Leave blank if all pages">
+                <label for="orientation">Layout</label>
+                <select name="orientation" id="orientation">
+                    <option value="Portrait">Portrait</option>
+                    <option value="Landscape">Landscape</option>
+                </select>
+                <input id="form-submit" type=submit value=Print>
+            </form>
+        </div>
+
+
+        <div id="footer">
+            <div id="add">
+                Developed by <a href="https://github.com/Koushikphy"><i
+                        class="fa fa-github" style="font-size:24px"></i> Koushikphy</a>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+</html>
