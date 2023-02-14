@@ -6,7 +6,7 @@
     <meta name=viewport content='width=700'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Web Printer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         html,
@@ -48,6 +48,7 @@
 
         input[type='text'],
         input[type='file'],
+        input[type='number'],
         input[type='submit'],
         select {
             font-size: 1.0rem;
@@ -93,6 +94,8 @@
                 <input type=file name='file'>
                 <label for="pages">Pages</label>
                 <input type="text" name="pages" id="pages" placeholder="Leave blank if all pages">
+                <label for="perpage">Pages per sheet</label>
+                <input type="number" name="perpage" value="1" min="1" id="perpage">
                 <label for="orientation">Layout</label>
                 <select name="orientation" id="orientation">
                     <option value="Portrait">Portrait</option>

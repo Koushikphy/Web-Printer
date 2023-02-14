@@ -1,7 +1,7 @@
 ## Web Printer
 #### Make printers without Ethernet or Wifi connection available on LAN.
 
-When a printer does not have any Ethernet or Wifi connection it's not possible directly to print from other machine in the LAN. This flask app creates a webeserver that can accepts and prints documents. The webserver can be accessed from any machine on the LAN, so document can be printed on the isolated printer directly from any machine on the LAN.
+When a printer does not have any Ethernet or Wifi connection it's not possible directly to print from other machine in the LAN. This flask app creates a webeserver that can accepts and prints documents. The webserver can be accessed from any machine on the LAN, thus document can be printed on the isolated printer directly from any machine on the LAN.
 
 ### Usage:
 1. Clone this repo.
