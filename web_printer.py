@@ -14,6 +14,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def printFile(file,pages,orientation,per_page):
+    # return 0
     command = ['lpr',file,'-o', 'fit-to-page', '-o', f'number-up={per_page}']
     #^ Auto fit to page, provide custom scale later
     print(f"[{datetime.now().strftime('%I:%M:%S %p %d-%m-%Y')}] - [PRINT] - File: {file}")
@@ -30,25 +31,30 @@ def printFile(file,pages,orientation,per_page):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+    retCodes = []
     if request.method == 'POST':
         try:
-            # print(request.form,request.files)
-            file = request.files.get('file',None)
             pages = request.form.get('pages')
             ornt  = request.form.get('orientation')
             per_page = request.form.get('perpage')
-            if not file or file.filename == '':
-                return render_template('out.html',data="No file attached")
-            filename = secure_filename(file.filename)
-            newpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            for file in request.files.getlist('file'):
 
-            file.save(newpath)
-            ret = printFile(newpath,pages,ornt,per_page)
+                if not file or file.filename == '':
+                    return render_template('out.html',data="No file attached")
+                filename = secure_filename(file.filename)
+                newpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-            if ret==0:
+                file.save(newpath)
+                print(newpath)
+            
+                ret = printFile(newpath,pages,ornt,per_page)
+                retCodes.append(ret)
+
+            if all(retCodes)==0:
                 txt = "Print job submitted successfully"
             else:
                 txt = "Unable to submit print job"
+                
         except Exception as e:
             print(e)
             txt = "Unable to submit print job"
