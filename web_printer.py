@@ -13,6 +13,11 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+
+# check the list of available printers with `lpstat -p -d` 
+# pass the particular printer with `-P` flag to `lpr`
+
+
 def printFile(file,pages,orientation,per_page):
     # return 0
     command = ['lpr',file,'-o', 'fit-to-page', '-o', f'number-up={per_page}']
