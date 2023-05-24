@@ -1,8 +1,10 @@
 import os
+import logging
 from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from subprocess import run
 from datetime import datetime
+import subprocess
 
 UPLOAD_FOLDER = 'FILE_STORE'
 
@@ -13,6 +15,18 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
+def makeLogger(logFile):
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    fh = logging.FileHandler(logFile)
+    logger.addHandler(fh)
+    return logger
+
+
+logger = makeLogger('webprinter.log')
+def getNumberOfPage(pdfFile):
+    t = subprocess.run(f"pdfinfo {pdfFile}  | awk '/^Pages:/ {{print $2}}'",shell=True,stdout=subprocess.PIPE)#,text=True)
+    return t.stdout.strip()
 
 # check the list of available printers with `lpstat -p -d` 
 # pass the particular printer with `-P` flag to `lpr`
@@ -20,14 +34,16 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def printFile(file,pages,orientation,per_page):
     # return 0
-    command = ['lpr',file,'-o', 'fit-to-page', '-o', f'number-up={per_page}']
+    command = ['lpr',file,'-o', 'fit-to-page', '-o', f'number-up={per_page}', '-P', 'HP-ColorLaserJet-M153-M154']
     #^ Auto fit to page, provide custom scale later
-    print(f"[{datetime.now().strftime('%I:%M:%S %p %d-%m-%Y')}] - [PRINT] - File: {file}")
+    pg = getNumberOfPage(file)
     if pages:
         command.extend(['-o',f'page-ranges={pages}'])
     if orientation=='Landscape':
         command.extend(['-o','orientation-requested=4'])
     ret = run(command)
+    logger.info(f"[{datetime.now().strftime('%I:%M:%S %p %d-%m-%Y')}] - File: {file}, Total No. of pages: {pg}, Pagesto print: {pages}, Per-page: {per_page}")
+    #^ streamline this logic
     return ret.returncode
 
 
