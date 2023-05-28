@@ -26,7 +26,12 @@ def makeLogger(logFile):
 logger = makeLogger('webprinter.log')
 def getNumberOfPage(pdfFile):
     t = subprocess.run(f"pdfinfo {pdfFile}  | awk '/^Pages:/ {{print $2}}'",shell=True,stdout=subprocess.PIPE)#,text=True)
-    return t.stdout.strip()
+    v = t.stdout.strip()
+    try:
+        v = v.decode()
+    except (UnicodeDecodeError, AttributeError):
+        pass
+    return v
 
 # check the list of available printers with `lpstat -p -d` 
 # pass the particular printer with `-P` flag to `lpr`
@@ -36,14 +41,11 @@ def printFile(file,pages,orientation,per_page):
     # return 0
     command = ['lpr',file,'-o', 'fit-to-page', '-o', f'number-up={per_page}', '-P', 'HP-ColorLaserJet-M153-M154']
     #^ Auto fit to page, provide custom scale later
-    pg = getNumberOfPage(file)
     if pages:
         command.extend(['-o',f'page-ranges={pages}'])
     if orientation=='Landscape':
         command.extend(['-o','orientation-requested=4'])
     ret = run(command)
-    logger.info(f"[{datetime.now().strftime('%I:%M:%S %p %d-%m-%Y')}] - File: {file}, Total No. of pages: {pg}, Pagesto print: {pages}, Per-page: {per_page}")
-    #^ streamline this logic
     return ret.returncode
 
 
@@ -66,7 +68,14 @@ def upload_file():
                 newpath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
                 file.save(newpath)
-                print(newpath)
+                # print(newpath)
+
+                # log things
+                pg = getNumberOfPage(newpath)
+                txt = f"[{datetime.now().strftime('%I:%M:%S %p %d-%m-%Y')}] - File: {file}, Total No. of pages: {pg} "
+                if pages: txt += f"Pages to print: {pages} "
+                if per_page: txt += f"Per page: {per_page}"
+                logger.info(txt)
             
                 ret = printFile(newpath,pages,ornt,per_page)
                 retCodes.append(ret)
